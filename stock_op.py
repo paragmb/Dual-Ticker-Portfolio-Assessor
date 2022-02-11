@@ -1,5 +1,5 @@
 
-"""Stock Optimizer Application
+"""Dual-Ticker Portfolio Assessor
 
 This is a command line application to optimize stock portfolio.
 
@@ -40,7 +40,7 @@ def get_investor_info():
     Returns:
         Returns the investor's information.
     """
-    print(f"Select 2 Stocks: AAPL, F, TWTR, FB, AAL, AMZN, GOOGL, ^GSPC")
+    print(f"Select 2 Stocks: AAL, AAPL, AMZN, F, FB, GOOGL, TSLA, TWTR")
     ticker1 = questionary.text("What's your stock1 symbol/ticker?").ask()
     ticker2 = questionary.text("What's your stock2 symbol/ticker?").ask()
     ratio1 = questionary.text("What's your ratio for stock1?").ask()
@@ -61,7 +61,7 @@ def pull_stock_data(ticker1, ticker2):
        basis: 3 years of historical data
     """
 
-    tickers = [ticker1, ticker2]  
+    tickers = [ticker1, ticker2, "SPY"]  
     #tickers.append(ticker1) 
     #tickers.append(ticker2)
 
@@ -83,29 +83,46 @@ def pull_stock_data(ticker1, ticker2):
     print(prices_df.tail())
     return prices_df
     
-#def sharpe_ratio(df):
-    #sp_df = df.drop(df.columns[[3,4]], axis=1)  
-    #sp_df = sp_df.set_index('Date') 
-    #sp_df = sp_df.rename(columns={sp_df.columns[0]: "close"})
-    #print(sp_df)
-    #sp_df = sp_df.pct_change()
-    #year_trading_days = 252
-    #average_annual_return = sp_df.mean() * year_trading_days
-    #annualized_standard_deviation = sp_df.std() * (year_trading_days) ** (1 / 2)
-    #sharpe_ratios = average_annual_return / annualized_standard_deviation
-    #print(f"This are the shape ratio {sharpe_ratios}")
-    #print("test line 2")
-    #sharpe_ratios.plot.bar(title="Sharpe Ratios")
-    #plt.show()
+def quantitative_analysis(prices_df):
     
-    #return sp_df
+    # Analyze daily_returns
+    close_prices_df = prices_df.iloc[:,[3,8,13]]
+    print(close_prices_df)
+    portfolio_daily_returns = close_prices_df.pct_change().dropna()
+    portfolio_daily_returns.plot(title="Daily Return - Portfolio and S&P 500")
+    plt.show()
 
-def fin_forecast(ratio1, ratio2, prices_df,inves_amt, ticker1, ticker2):
+    # Analyze cumulative_returns
+    portfolio_cumulative_returns = (1 + portfolio_daily_returns).cumprod() - 1
+    portfolio_cumulative_returns.plot(title="Cumulative Returns - Portfolio and S&P 500")
+    plt.show()
+
+    # Analyze volatility
+    portfolio_daily_returns.plot(kind='box', title="Daily Return - Portfolio and S&P 500")
+    plt.show()
+
+    # Analyze risk (using standard deviation; basis - rolling 21-day)
+    portfolio_daily_returns.rolling(window=21).std().plot(title="Rolling 21-day Standard Deviation - Portfolio and S&P 500")
+    plt.show()
+
+    # Analyze risk-return (Sharpe Ratio)
+    year_trading_days = 252
+    annualized_standard_deviation = portfolio_daily_returns.std() * (year_trading_days) ** (1/2)
+    average_annual_return = portfolio_daily_returns.mean() * year_trading_days
+    sharpe_ratios = average_annual_return / annualized_standard_deviation
+    sharpe_ratios.plot.bar(rot=0, title="Sharpe Ratios - Four Funds and S&P 500")
+    plt.show()
+
+def fin_forecast(ratio1, ratio2, prices_df, inves_amt, ticker1, ticker2):
     """used to forecast 3 years of financial forecast/projection
     """
-    print("print test line 6")
+    #print("print test line 6")
+    sim_prices_df = prices_df.drop(labels=['SPY'], axis =1)
+    print(sim_prices_df.head())
+    print(sim_prices_df.tail())
+
     forecast = MCSimulation(
-        portfolio_data = prices_df,
+        portfolio_data = sim_prices_df,
         weights = [ratio1, ratio2],
         num_simulation = 500,
         num_trading_days = 252*3
@@ -115,7 +132,7 @@ def fin_forecast(ratio1, ratio2, prices_df,inves_amt, ticker1, ticker2):
     # Run the Monte Carlo simulation to forecast 3 years cumulative returns
     print(forecast.calc_cumulative_return())
 
-    # Visualize the 30-year Monte Carlo simulation by creating an
+    # Visualize the 3-year Monte Carlo simulation by creating an
     # overlay line plot
     forecast_line_plot = forecast.plot_simulation()
     plt.show()
@@ -126,11 +143,11 @@ def fin_forecast(ratio1, ratio2, prices_df,inves_amt, ticker1, ticker2):
     forecast_distribution_plot = forecast.plot_distribution()
     plt.show()
     
-    #Generate summary statistics from the 30-year Monte Carlo simulation results
+    #Generate summary statistics from the 3-year Monte Carlo simulation results
     # Save the results as a variable; we name it as MC_retire_table
     forecast_table = forecast.summarize_cumulative_return()
     
-    # Review the 30-year Monte Carlo summary statistics
+    # Review the 3-year Monte Carlo summary statistics
     print(forecast_table)
 
     # Use the lower and upper `95%` confidence intervals to calculate the range of the possible outcomes for the current stock/bond portfolio
@@ -143,7 +160,7 @@ def fin_forecast(ratio1, ratio2, prices_df,inves_amt, ticker1, ticker2):
     #Plotting the future value CIs
     future_data = [ci_lower_cumulative_return,ci_upper_cumulative_return]
     future_df = pd.DataFrame(data=future_data, columns=["Future Value"], index=['Future_Lower', 'Future_Upper'])
-    print(future_df)
+    #print(future_df)
 
     per_ratio1 = ratio1*100
     per_ratio2 = ratio2*100
@@ -161,12 +178,13 @@ def run():
     # Get the investor's information
     ticker1, ticker2, ratio1, ratio2, inves_amt = get_investor_info()
 
-    # used to grab the stock prices, with yahoo
+    # Used to grab the stock prices, with yahoo
     prices_df = pull_stock_data(ticker1, ticker2)
 
-    #print("testing line 5")
-    #sp_df = sharpe_ratio(df)
+    # Perform Quantitative Analysis
+    quantitative_analysis(prices_df)
     
+    # Perform Forecast Analysis
     fin_forecast(ratio1,ratio2,prices_df,inves_amt,ticker1,ticker2)
     
     
