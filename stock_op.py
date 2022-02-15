@@ -18,6 +18,13 @@ import alpaca_trade_api as tradeapi
 from MCForecastTools import MCSimulation
 from matplotlib import pyplot as plt
 import hvplot.pandas
+import holoviews as hv
+
+# setting bokeh as backend
+hv.extension('bokeh')
+
+# going to use show() to open plot in browser
+from bokeh.plotting import show
 
 # Load the environment variables from the .env file
 #by calling the load_dotenv function
@@ -166,8 +173,9 @@ def fin_forecast(ratio1, ratio2, prices_df, inves_amt, ticker1, ticker2):
     per_ratio2 = ratio2*100
 
     #print(f"For {per_ratio1} of {ticker1} and {per_ratio2} of {ticker2} at {inves_amt}")
-    future_df.plot.bar(y='Future Value', ylabel='Future Value($)', rot=0, color="orange",figsize=(5,5), title=f"Future Value (3 yrs) - {per_ratio1:.0f}% of {ticker1} & {per_ratio2:.0f}% of {ticker2} for ${inves_amt}")
-    plt.show()
+    futureplot = future_df.hvplot.bar(y='Future Value', ylabel='Future Value($)', rot=0, color="orange",figsize=(5,5), title=f"Future Value (3 yrs) - {per_ratio1:.0f}% of {ticker1} & {per_ratio2:.0f}% of {ticker2} for ${inves_amt}")
+    #plt.show()
+    show(hv.render(futureplot))
 
     return forecast
 
