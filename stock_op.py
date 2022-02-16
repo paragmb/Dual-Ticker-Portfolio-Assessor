@@ -6,6 +6,8 @@ This is a command line application to optimize stock portfolio.
 
 """
 import sys
+from tkinter.messagebox import NO
+from turtle import title
 import fire
 import questionary
 import os
@@ -97,11 +99,13 @@ def quantitative_analysis(prices_df):
     print(close_prices_df)
     portfolio_daily_returns = close_prices_df.pct_change().dropna()
     portfolio_daily_returns.plot(title="Daily Return - Portfolio and S&P 500")
+    plt.legend(title=False)
     plt.show()
 
     # Analyze cumulative_returns
     portfolio_cumulative_returns = (1 + portfolio_daily_returns).cumprod() - 1
     portfolio_cumulative_returns.plot(title="Cumulative Returns - Portfolio and S&P 500")
+    plt.legend(title=False)
     plt.show()
 
     # Analyze volatility
@@ -110,6 +114,7 @@ def quantitative_analysis(prices_df):
 
     # Analyze risk (using standard deviation; basis - rolling 21-day)
     portfolio_daily_returns.rolling(window=21).std().plot(title="Rolling 21-day Standard Deviation - Portfolio and S&P 500")
+    plt.legend(title=False)
     plt.show()
 
     # Analyze risk-return (Sharpe Ratio)
@@ -117,7 +122,7 @@ def quantitative_analysis(prices_df):
     annualized_standard_deviation = portfolio_daily_returns.std() * (year_trading_days) ** (1/2)
     average_annual_return = portfolio_daily_returns.mean() * year_trading_days
     sharpe_ratios = average_annual_return / annualized_standard_deviation
-    sharpe_ratios.plot.bar(rot=0, title="Sharpe Ratios - Four Funds and S&P 500")
+    sharpe_ratios.plot.bar(rot=0, title="Sharpe Ratios - Portfolio and S&P 500")
     plt.show()
 
 def fin_forecast(ratio1, ratio2, prices_df, inves_amt, ticker1, ticker2):
