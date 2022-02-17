@@ -109,11 +109,14 @@ def quantitative_analysis(prices_df):
     plt.show()
 
     # Analyze volatility
-    portfolio_daily_returns.plot(kind='box', title="Daily Return - Portfolio and S&P 500")
+    # Let's 1st remove the outliner to allow to zoom into the box-plot
+    # Let's define a new dataframe portfolio_daily_returns_zoom
+    portfolio_daily_returns_zoom = portfolio_daily_returns[portfolio_daily_returns > -0.25]
+    portfolio_daily_returns_zoom.plot(kind='box', title="Daily Return - Portfolio and S&P 500")
     plt.show()
 
     # Analyze risk (using standard deviation; basis - rolling 21-day)
-    portfolio_daily_returns.rolling(window=21).std().plot(title="Rolling 21-day Standard Deviation - Portfolio and S&P 500")
+    portfolio_daily_returns_zoom.rolling(window=21).std().plot(title="Rolling 21-day Standard Deviation - Portfolio and S&P 500")
     plt.legend(title=False)
     plt.show()
 
