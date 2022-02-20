@@ -45,6 +45,8 @@ User needs to be ready with the following information:
 - *Ratio/weight for Stock2*
 - *Investment Amount*
 
+For the weights parameter, user must list the weight of each asset in the order that the assets appear in the DataFrame (hence enter the stock ticker in alphabetcal order  e.g. AAX should be entered before AAY and so on)
+
 ---
 
 ## Quantitative Analysis
