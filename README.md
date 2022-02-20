@@ -36,7 +36,7 @@ This project leverages python 3.9.7 with the following main packages:
 
 Ensure the conda dev environment is activated.
 
-Using CLI, please run the python file "stock_op.py". When prompted:
+User should have created their own .env file that stores the values of Alpaca API key and Alpaca secret key. Using CLI, please run the python file "stock_op.py". When prompted:
 
 User needs to be ready with the following information: 
 - *Stock1 ticker* 
@@ -68,7 +68,7 @@ Useful insights can be gained from the quantitative plots. The dip in Apple (AAP
 
 ---
 
-## Fianancial Forecasting Analysis
+## Financial Forecasting Analysis
 
 Monte Carlo algorithm is used to predict future stock values. Past stock values downloaded using Alpaca APIs are used to create a normal distribution of past daily returns. MC algorithm uses past daily return normal distribution to predict future daily values and cumulative returns by randomly selecting values from the distribution and propagating the stock's current value into the future. Cumulative returns are calculated from the future stock values and plotted for 500 simulations. All simulations are numerically different from each other due to the randomly selected daily return values from the normal distribution. Cumulative return probability distribution is also shown as a bar graph to illustrate the most probable future scenario range from all 500 simulations. 95% Confidence interval and its boundary values are also given for information. These boundary values should be evaluated together with the future cumulative return distribution. The financial forecasting analysis plots are as follows:
 
@@ -83,9 +83,35 @@ Monte Carlo algorithm is used to predict future stock values. Past stock values 
 
 ---
 
+## Issues
+
+New library "DataReader" was initially used to pull historical stock data. The library was sucessfully used to perform the quantitative analysis but the group ran into issues while using the library for running Monte Carlo simulations. After discussions within the group and class instructor it was decided to use Alpaca library to load data. Additionally this was also done to ensure that the project was completed on time. Please refer to the code file in the SUPERSEDED folder in the main repository.
+
+---
+
+## New Library
+
+New library "Bokeh" was used. Bokeh is a data visualization library in Python that provides high-performance interactive charts and plots. Bokeh output can be obtained in various mediums like notebook, html and server. We used it to get interactive Holoviews graph to display in Visual Studio (since the group did not use the Jupyter Lab).
+
+---
+
+## Presentation
+
+Please click on the following link to view the project presentation.
+https://github.com/paragmb/Project1/blob/0159a7dd93a9b84a20cf7eb1b8473090f5864e56/Presentation/FinTech_Project1_Grp3_Presentation.pdf
+
+---
+
+## Future Steps
+
+Although our program gives a guidance on selection of stocks, it will work for any 2 stocks as long as they are supported in Alpaca library. The program can further developed to include multiple (2 or more) stocks for more investment selections. The program can be converted into web-based interactive application in future.
+
+---
+
 ## Contributors
 
 Bolaji Ajimotokan, Onur Guvener, Parag Borkar
 
 ---
 
+© 2022 Trilogy Education Services, a 2U, Inc. brand. All Rights Reserved.
