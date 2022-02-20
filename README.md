@@ -36,7 +36,7 @@ This project leverages python 3.9.7 with the following main packages:
 
 Ensure the conda dev environment is activated.
 
-Using CLI, please run the python file "stock_op.py". When prompted:
+User should have created their own .env file that stores the values of Alpaca API key and Alpaca secret key. Using CLI, please run the python file "stock_op.py". When prompted:
 
 User needs to be ready with the following information: 
 - *Stock1 ticker* 
