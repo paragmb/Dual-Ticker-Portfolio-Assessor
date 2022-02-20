@@ -69,7 +69,7 @@ def pull_stock_data(ticker1, ticker2):
     """used to grab the stock prices, with yahoo
        basis: 3 years of historical data
     """
-
+    # SPY is added to see how the two stocks performing w.r.t. the market
     tickers = [ticker1, ticker2, "SPY"]  
     #tickers.append(ticker1) 
     #tickers.append(ticker2)
@@ -194,7 +194,7 @@ def run():
     # Get the investor's information
     ticker1, ticker2, ratio1, ratio2, inves_amt = get_investor_info()
 
-    # Used to grab the stock prices, with yahoo
+    # Used to grab the stock prices, with Alpaca
     prices_df = pull_stock_data(ticker1, ticker2)
 
     # Perform Quantitative Analysis
